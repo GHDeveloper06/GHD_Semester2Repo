@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.U2D;
@@ -18,6 +19,8 @@ public class Player : MonoBehaviour
     public int bombCount = 3;
 
     public float bombSpacing = -1f;
+
+    //public float EnemyPlayerRatio;
 
     //make timer for bombs to recharge
     public float timerValue;
@@ -54,6 +57,22 @@ public class Player : MonoBehaviour
                 float CornerNumber = Random.Range(1, 5);
                 SpawnBombOnRandomCorner(CornerNumber);
                 bombCount -= 1;
+            }
+
+            if (Keyboard.current.wKey.wasPressedThisFrame) 
+            {
+                //float playerenemyX = transform.position.x * enemyTransform.position.x;
+                //float playerenemyY = transform.position.y * enemyTransform.position.y;
+                //EnemyPlayerRatio = (playerenemyX + playerenemyY) * 0.01f;
+
+                Vector3 playerNormalized = Vector3.Normalize(transform.position);
+                Vector3 enemyNormalized = Vector3.Normalize(enemyTransform.position);
+                float playerenemyX = playerNormalized.x * enemyNormalized.x;
+                float playerenemyY = playerNormalized.y * enemyNormalized.y;
+                float EnemyPlayerRatio = (playerenemyX + playerenemyY);
+                Debug.Log(EnemyPlayerRatio);
+
+                WarpPlayer(enemyTransform, EnemyPlayerRatio);
             }
         }
         
@@ -94,5 +113,11 @@ public class Player : MonoBehaviour
         {
             Instantiate(bombPrefab, transform.position + new Vector3(-2f, -2f), Quaternion.identity);
         }
+    }
+
+    public void WarpPlayer(Transform target, float ratio) 
+    {
+        transform.position = target.position * ratio;
+        
     }
 }
