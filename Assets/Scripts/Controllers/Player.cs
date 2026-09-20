@@ -28,6 +28,9 @@ public class Player : MonoBehaviour
     public Vector2 bombOffset = new Vector2(0, -1);
     void Update()
     {
+        //DetectAsteroids(float inMaxRange, List < Transform > inAsteroids)
+        DetectAsteroids(2.5f, asteroidTransforms);
+
         if (bombCount != bombLimit) 
         {//cooldown only starts of bombs need to be recharged
             timerValue += Time.deltaTime;
@@ -119,5 +122,17 @@ public class Player : MonoBehaviour
     {
         transform.position = target.position * ratio;
         
+    }
+    public void DetectAsteroids(float inMaxRange, List<Transform> inAsteroids) 
+    { // if asteriod in list is within Max Range draw a 2.5 long line from player position to asteroid
+        for (int i = 0; i < inAsteroids.Count; i++) 
+        {
+            float distance = Vector3.Distance(inAsteroids[i].position, transform.position);
+            if (distance <= inMaxRange) 
+            {
+                Debug.DrawLine(transform.position, inAsteroids[i].position, Color.red);
+            }
+        }
+    
     }
 }
