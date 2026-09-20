@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.U2D;
 
 public class Player : MonoBehaviour
 {
@@ -47,6 +48,13 @@ public class Player : MonoBehaviour
                 bombSpacing = -1f;
                 spawnBombTrail(bombSpacing, bombCount);
             }
+
+            if (Keyboard.current.cKey.wasPressedThisFrame) 
+            {
+                float CornerNumber = Random.Range(1, 5);
+                SpawnBombOnRandomCorner(CornerNumber);
+                bombCount -= 1;
+            }
         }
         
     }
@@ -65,6 +73,26 @@ public class Player : MonoBehaviour
             Instantiate(bombPrefab, transform.position + new Vector3(0, inBombSpacing), Quaternion.identity);
             bombCount -= 1;
             inBombSpacing -= 1f;
+        }
+    }
+
+    public void SpawnBombOnRandomCorner(float inDistance)
+    {//if statements are organized in a clockwise motion
+        if (inDistance == 1)//top left
+        {
+            Instantiate(bombPrefab, transform.position + new Vector3(-2f, 2f), Quaternion.identity);
+        }
+        else if (inDistance == 2)//top right 
+        {
+            Instantiate(bombPrefab, transform.position + new Vector3(2f, 2f), Quaternion.identity);
+        }
+        else if (inDistance == 3)//bottom right
+        {
+            Instantiate(bombPrefab, transform.position + new Vector3(2f, -2f), Quaternion.identity);
+        }
+        else if (inDistance == 4)//bottom left
+        {
+            Instantiate(bombPrefab, transform.position + new Vector3(-2f, -2f), Quaternion.identity);
         }
     }
 }
