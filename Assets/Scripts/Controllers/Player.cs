@@ -32,7 +32,7 @@ public class Player : MonoBehaviour
         DetectAsteroids(2.5f, asteroidTransforms);
 
         if (bombCount != bombLimit) 
-        {//cooldown only starts of bombs need to be recharged
+        {//cooldown only starts if bombs need to be recharged
             timerValue += Time.deltaTime;
         }
         if (timerValue >= timerMax) 
