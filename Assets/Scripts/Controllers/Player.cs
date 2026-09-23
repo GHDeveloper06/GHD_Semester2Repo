@@ -10,7 +10,18 @@ public class Player : MonoBehaviour
     public GameObject bombPrefab;
     public List<Transform> asteroidTransforms;
 
-    // Update is called once per frame
+    public float maxSpeed = 1f;
+    public float accelerationTime;
+    private float acceleration;
+
+    private Vector3 velocity = Vector3.zero;
+
+    void Start() 
+    {
+        acceleration = maxSpeed / accelerationTime; // a = delta V / delta T
+    }
+
+    //public float UniversalTimer;
 
     //create public Vector2 bomboffset
 
@@ -28,6 +39,8 @@ public class Player : MonoBehaviour
     public Vector2 bombOffset = new Vector2(0, -1);
     void Update()
     {
+        //UniversalTimer += Time.deltaTime;
+        PlayerController();
         //DetectAsteroids(float inMaxRange, List < Transform > inAsteroids)
         DetectAsteroids(2.5f, asteroidTransforms);
 
@@ -123,6 +136,7 @@ public class Player : MonoBehaviour
         transform.position = target.position * ratio;
         
     }
+
     public void DetectAsteroids(float inMaxRange, List<Transform> inAsteroids) 
     { // if asteriod in list is within Max Range draw a 2.5 long line from player position to asteroid
         for (int i = 0; i < inAsteroids.Count; i++) 
@@ -133,6 +147,36 @@ public class Player : MonoBehaviour
                 Debug.DrawLine(transform.position, inAsteroids[i].position, Color.red);
             }
         }
-    
     }
+#region Movement
+    public void PlayerController() 
+    {
+        if (Keyboard.current.upArrowKey.isPressed) 
+        {
+            //transform.position += Vector3.up * maxSpeed;
+            velocity += Time.deltaTime * acceleration * Vector3.up;
+        }
+        if (Keyboard.current.rightArrowKey.isPressed)
+        {
+
+            velocity += Time.deltaTime * acceleration * Vector3.right;
+        }
+        if (Keyboard.current.leftArrowKey.isPressed)
+        {
+            velocity += Time.deltaTime * acceleration * Vector3.left;
+        }
+        if (Keyboard.current.downArrowKey.isPressed)
+        {
+
+            velocity += Time.deltaTime * acceleration * Vector3.down;
+        }
+        if (velocity.magnitude > maxSpeed) 
+        {
+            velocity = velocity.normalized * maxSpeed;
+        }
+        //velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+        transform.position += Time.deltaTime * velocity;
+        Debug.Log(velocity.magnitude);
+    }
+    #endregion
 }
