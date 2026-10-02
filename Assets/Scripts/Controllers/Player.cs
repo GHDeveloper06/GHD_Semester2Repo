@@ -14,11 +14,25 @@ public class Player : MonoBehaviour
     public float accelerationTime;
     private float acceleration;
 
+    //0 is un assigned, 1 is not pressed, 2 is pressed
+    private float goingUp;
+    private float upTimer;
+
+    private bool goingDown = false;
+    private float downTimer;
+
+    private bool goingLeft = false;
+    private float leftTimer;
+
+    private bool goingRight = false;
+    private float rightTimer;
+
     private Vector3 velocity = Vector3.zero;
 
     void Start() 
     {
         acceleration = maxSpeed / accelerationTime; // a = delta V / delta T
+        goingUp = 0;
     }
 
     //public float UniversalTimer;
@@ -93,6 +107,7 @@ public class Player : MonoBehaviour
         }
         
     }
+    #region Bombs
     //create method to spawn bomb
     public void spawnBombAtOffset(Vector2 playerPosition)
     {
@@ -130,7 +145,7 @@ public class Player : MonoBehaviour
             Instantiate(bombPrefab, transform.position + new Vector3(-2f, -2f), Quaternion.identity);
         }
     }
-
+    #endregion
     public void WarpPlayer(Transform target, float ratio) 
     {
         transform.position = target.position * ratio;
@@ -151,32 +166,74 @@ public class Player : MonoBehaviour
 #region Movement
     public void PlayerController() 
     {
-        if (Keyboard.current.upArrowKey.isPressed) 
+        if (Keyboard.current.upArrowKey.isPressed)
         {
             //transform.position += Vector3.up * maxSpeed;
             velocity += Time.deltaTime * acceleration * Vector3.up;
+            goingUp = 2;
         }
+        /*else if (goingUp == 1) 
+        {
+            
+            if (velocity.magnitude <= 0.5) 
+            {
+                transform.position += Time.deltaTime * velocity * 0;
+                goingUp = 0;
+            }
+            else
+            {
+                velocity += Time.deltaTime * -acceleration * Vector3.up;
+            }
+            
+        }*/
+        if (Keyboard.current.upArrowKey.wasReleasedThisFrame) 
+        {
+            goingUp = 1;
+        }
+
         if (Keyboard.current.rightArrowKey.isPressed)
         {
-
             velocity += Time.deltaTime * acceleration * Vector3.right;
+            goingRight = true;
         }
+        if (Keyboard.current.rightArrowKey.wasReleasedThisFrame)
+        {
+            goingRight = false;
+        }
+
         if (Keyboard.current.leftArrowKey.isPressed)
         {
             velocity += Time.deltaTime * acceleration * Vector3.left;
+            goingLeft = true;
+
         }
+        if (Keyboard.current.leftArrowKey.wasReleasedThisFrame)
+        {
+            goingLeft = false;
+        }
+
         if (Keyboard.current.downArrowKey.isPressed)
         {
-
             velocity += Time.deltaTime * acceleration * Vector3.down;
+            goingDown = false;
+
         }
+        if (Keyboard.current.downArrowKey.wasReleasedThisFrame)
+        {
+            goingDown = false;
+        }
+
         if (velocity.magnitude > maxSpeed) 
         {
             velocity = velocity.normalized * maxSpeed;
         }
+
         //velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
+
         transform.position += Time.deltaTime * velocity;
         Debug.Log(velocity.magnitude);
+        
+
     }
     #endregion
 }
