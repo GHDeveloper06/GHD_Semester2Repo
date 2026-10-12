@@ -1,38 +1,32 @@
 ﻿using System.Collections.Generic;
-using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.U2D;
-
 public class Player : MonoBehaviour
 {
     public Transform enemyTransform;
     public GameObject bombPrefab;
     public List<Transform> asteroidTransforms;
+    [SerializeField] private List<float> pointCircles = new ();
+    
+    //make list for vector positions
+    [SerializeField] private List<Vector3> radarPoints = new();
 
     public float maxSpeed = 1f;
     public float accelerationTime;
     private float acceleration;
 
+    private int count = 1;
+
     //0 is un assigned, 1 is not pressed, 2 is pressed
-    private float goingUp;
-    private float upTimer;
-
-    private bool goingDown = false;
-    private float downTimer;
-
-    private bool goingLeft = false;
-    private float leftTimer;
-
-    private bool goingRight = false;
-    private float rightTimer;
 
     private Vector3 velocity = Vector3.zero;
+
+    //public Transform playerTransform;
 
     void Start() 
     {
         acceleration = maxSpeed / accelerationTime; // a = delta V / delta T
-        goingUp = 0;
+        //enemyRadar(3, 10);
     }
 
     //public float UniversalTimer;
@@ -53,9 +47,10 @@ public class Player : MonoBehaviour
     public Vector2 bombOffset = new Vector2(0, -1);
     void Update()
     {
+        enemyRadar(1, 3);
         //UniversalTimer += Time.deltaTime;
         PlayerController();
-        //DetectAsteroids(float inMaxRange, List < Transform > inAsteroids)
+        
         DetectAsteroids(2.5f, asteroidTransforms);
 
         if (bombCount != bombLimit) 
@@ -91,9 +86,7 @@ public class Player : MonoBehaviour
 
             if (Keyboard.current.wKey.wasPressedThisFrame) 
             {
-                //float playerenemyX = transform.position.x * enemyTransform.position.x;
-                //float playerenemyY = transform.position.y * enemyTransform.position.y;
-                //EnemyPlayerRatio = (playerenemyX + playerenemyY) * 0.01f;
+
 
                 Vector3 playerNormalized = Vector3.Normalize(transform.position);
                 Vector3 enemyNormalized = Vector3.Normalize(enemyTransform.position);
@@ -163,6 +156,43 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    public void enemyRadar(float radius, int circlePoints) 
+    {
+        //check how much each point should take up
+        int circlePieces = 360 / circlePoints;
+
+        if (count >= circlePoints)
+        {
+            //do nothing
+        }
+        else
+        //determine what each circlePoint should be
+        {
+            for (int i = 0; i < circlePoints; i++)
+            {
+                //for each element in the list, determine their x & y
+                float pointValues = circlePieces * (i + 1);
+                pointCircles.Add(pointValues);
+                count++;
+                //convert angle to rads
+                float angle = pointCircles[i] * Mathf.Deg2Rad;
+                //increase/decrease x & y with radius
+                float xPos = Mathf.Cos(angle) * radius;
+                float yPos = Mathf.Sin(angle) * radius;
+
+                Vector3 circlePointXY = new Vector3(xPos, yPos, 0);
+                radarPoints.Add(circlePointXY);
+
+
+                Debug.DrawLine(transform.position, transform.position + circlePointXY);
+            }
+        }
+        for (int i = 0; i < circlePoints; i++) 
+        {
+            Debug.DrawLine(radarPoints[i], transform.position, Color.green);
+        }
+    }
 #region Movement
     public void PlayerController() 
     {
@@ -170,70 +200,33 @@ public class Player : MonoBehaviour
         {
             //transform.position += Vector3.up * maxSpeed;
             velocity += Time.deltaTime * acceleration * Vector3.up;
-            goingUp = 2;
-        }
-        /*else if (goingUp == 1) 
-        {
             
-            if (velocity.magnitude <= 0.5) 
-            {
-                transform.position += Time.deltaTime * velocity * 0;
-                goingUp = 0;
-            }
-            else
-            {
-                velocity += Time.deltaTime * -acceleration * Vector3.up;
-            }
-            
-        }*/
-        if (Keyboard.current.upArrowKey.wasReleasedThisFrame) 
-        {
-            goingUp = 1;
         }
-
         if (Keyboard.current.rightArrowKey.isPressed)
         {
             velocity += Time.deltaTime * acceleration * Vector3.right;
-            goingRight = true;
-        }
-        if (Keyboard.current.rightArrowKey.wasReleasedThisFrame)
-        {
-            goingRight = false;
+            
         }
 
         if (Keyboard.current.leftArrowKey.isPressed)
         {
             velocity += Time.deltaTime * acceleration * Vector3.left;
-            goingLeft = true;
 
-        }
-        if (Keyboard.current.leftArrowKey.wasReleasedThisFrame)
-        {
-            goingLeft = false;
         }
 
         if (Keyboard.current.downArrowKey.isPressed)
         {
             velocity += Time.deltaTime * acceleration * Vector3.down;
-            goingDown = false;
 
-        }
-        if (Keyboard.current.downArrowKey.wasReleasedThisFrame)
-        {
-            goingDown = false;
         }
 
         if (velocity.magnitude > maxSpeed) 
         {
             velocity = velocity.normalized * maxSpeed;
         }
-
         //velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
-
         transform.position += Time.deltaTime * velocity;
         Debug.Log(velocity.magnitude);
-        
-
     }
     #endregion
 }
