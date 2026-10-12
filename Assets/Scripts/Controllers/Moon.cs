@@ -24,14 +24,18 @@ public class Moon : MonoBehaviour
 
     public void OrbitalMotion(float radius, float speed, Transform target) 
     {
+        //increase step angle each frame
         stepAngle += Time.deltaTime * speed;
+        //convert step angle from degrees to radians
         float currentAngle = stepAngle * Mathf.Deg2Rad;
+        //get X and Y position for angle
         float xPos = Mathf.Cos(currentAngle) * radius;
         float yPos = Mathf.Sin(currentAngle) * radius;
-
-        Vector3 spawnPoint = new Vector3(xPos + target.transform.position.x, yPos + target.transform.position.y, 0);
-        Debug.Log(spawnPoint);
-        transform.position = spawnPoint;
+        //create vector with X & Y angle positions
+        Vector3 orbiter = new Vector3(xPos + target.transform.position.x, yPos + target.transform.position.y, 0);
+        
+        //set the moon's transform to unit circle position
+        transform.position = orbiter;
 
     }
 }
