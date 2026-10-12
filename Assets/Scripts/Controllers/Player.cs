@@ -7,6 +7,10 @@ public class Player : MonoBehaviour
     public GameObject bombPrefab;
     public List<Transform> asteroidTransforms;
 
+    public GameObject powerUp;
+    public float puRadius = 3;
+    public int puAmount = 3;
+
     public float radarRadius = 3f;
     public int radarSideCount = 5;
 
@@ -49,7 +53,10 @@ public class Player : MonoBehaviour
         PlayerController();
         
         DetectAsteroids(2.5f, asteroidTransforms);
-
+        if (Keyboard.current.pKey.wasPressedThisFrame) 
+        {
+            SpawnPowerUps(puRadius, puAmount);
+        }
         if (bombCount != bombLimit) 
         {//cooldown only starts of bombs need to be recharged
             timerValue += Time.deltaTime;
@@ -139,7 +146,25 @@ public class Player : MonoBehaviour
         transform.position = target.position * ratio;
         
     }
+    public void SpawnPowerUps(float radius, int numberOfPowerups) 
+    {
+        //determine size of angle to add up to full rotation
+        float stepAngle = (2 * Mathf.PI) / (numberOfPowerups);
 
+        float currentAngle = stepAngle;
+
+        for (int i = 0; i < numberOfPowerups; i++) 
+        {
+            //scale x,y by radius
+            float xPos = Mathf.Cos(currentAngle) * radius;
+            float yPos = Mathf.Sin(currentAngle) * radius;
+
+            Vector3 spawnPoint = new Vector3(xPos + transform.position.x, yPos + transform.position.y, 0);
+            Instantiate(powerUp, spawnPoint, Quaternion.identity);
+            currentAngle += stepAngle;
+        }
+    }
+    #region Radar
     public void DetectAsteroids(float inMaxRange, List<Transform> inAsteroids) 
     { // if asteriod in list is within Max Range draw a 2.5 long line from player position to asteroid
         for (int i = 0; i < inAsteroids.Count; i++) 
@@ -208,10 +233,9 @@ public class Player : MonoBehaviour
                 }
             }
         }
-
-
     }
-#region Movement
+    #endregion
+    #region Movement
     public void PlayerController() 
     {
         if (Keyboard.current.upArrowKey.isPressed)
