@@ -6,16 +6,13 @@ public class Player : MonoBehaviour
     public Transform enemyTransform;
     public GameObject bombPrefab;
     public List<Transform> asteroidTransforms;
-    [SerializeField] private List<float> pointCircles = new ();
-    
-    //make list for vector positions
-    [SerializeField] private List<Vector3> radarPoints = new();
+
+    public float radarRadius = 3f;
+    public int radarSideCount = 5;
 
     public float maxSpeed = 1f;
     public float accelerationTime;
     private float acceleration;
-
-    private int count = 1;
 
     //0 is un assigned, 1 is not pressed, 2 is pressed
 
@@ -47,7 +44,7 @@ public class Player : MonoBehaviour
     public Vector2 bombOffset = new Vector2(0, -1);
     void Update()
     {
-        enemyRadar(1, 3);
+        enemyRadar(radarRadius, radarSideCount);
         //UniversalTimer += Time.deltaTime;
         PlayerController();
         
@@ -86,8 +83,6 @@ public class Player : MonoBehaviour
 
             if (Keyboard.current.wKey.wasPressedThisFrame) 
             {
-
-
                 Vector3 playerNormalized = Vector3.Normalize(transform.position);
                 Vector3 enemyNormalized = Vector3.Normalize(enemyTransform.position);
                 float playerenemyX = playerNormalized.x * enemyNormalized.x;
@@ -159,39 +154,62 @@ public class Player : MonoBehaviour
 
     public void enemyRadar(float radius, int circlePoints) 
     {
-        //check how much each point should take up
-        int circlePieces = 360 / circlePoints;
+        //determine size of angle to add up to full rotation
+        float stepAngle = (2 * Mathf.PI) / circlePoints;
 
-        if (count >= circlePoints)
-        {
-            //do nothing
-        }
-        else
-        //determine what each circlePoint should be
-        {
-            for (int i = 0; i < circlePoints; i++)
-            {
-                //for each element in the list, determine their x & y
-                float pointValues = circlePieces * (i + 1);
-                pointCircles.Add(pointValues);
-                count++;
-                //convert angle to rads
-                float angle = pointCircles[i] * Mathf.Deg2Rad;
-                //increase/decrease x & y with radius
-                float xPos = Mathf.Cos(angle) * radius;
-                float yPos = Mathf.Sin(angle) * radius;
+        //temporary list to store x,y of each stepAngle
+        List<Vector3> points = new();
 
-                Vector3 circlePointXY = new Vector3(xPos, yPos, 0);
-                radarPoints.Add(circlePointXY);
+        float currentAngle = stepAngle;
 
-
-                Debug.DrawLine(transform.position, transform.position + circlePointXY);
-            }
-        }
         for (int i = 0; i < circlePoints; i++) 
         {
-            Debug.DrawLine(radarPoints[i], transform.position, Color.green);
+            //scale x,y by radius
+            float xPos = Mathf.Cos(currentAngle) * radius;
+            float yPos = Mathf.Sin(currentAngle) * radius;
+
+            Vector3 newPoint = new Vector3(xPos, yPos, 0);
+            points.Add(newPoint);
+
+            //keeps current angle changing
+            currentAngle += stepAngle;
         }
+
+        for (int i = 0; i < circlePoints - 1; i++) 
+        {
+            //check if enemy is close to player
+            float distance = Vector3.Distance(enemyTransform.position, transform.position);
+
+            Vector3 startPoint = transform.position + points[i];
+            Vector3 endPoint = transform.position + points[i + 1];
+
+            if (distance <= radius)
+            {
+                Debug.DrawLine(startPoint, endPoint, Color.red);
+            }
+            else 
+            {
+                Debug.DrawLine(startPoint, endPoint, Color.green);
+            }
+            
+
+            if (i == circlePoints - 2) 
+            {
+                startPoint = transform.position + points[i + 1];
+                endPoint = transform.position + points[0];
+
+                if (distance <= radius)
+                {
+                    Debug.DrawLine(startPoint, endPoint, Color.red);
+                }
+                else
+                {
+                    Debug.DrawLine(startPoint, endPoint, Color.green);
+                }
+            }
+        }
+
+
     }
 #region Movement
     public void PlayerController() 
