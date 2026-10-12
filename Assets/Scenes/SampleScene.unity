@@ -487,6 +487,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1187463560}
   - component: {fileID: 1187463559}
+  - component: {fileID: 1187463561}
   m_Layer: 0
   m_Name: Circle
   m_TagString: Untagged
@@ -568,6 +569,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1187463561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1187463558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 912e8aa2a318b284fba5b7e9b3a1e306, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PointOnACircle
+  angles: []
+  moonTransform: {fileID: 1634050366}
+  startPoint: {x: 0, y: 0, z: 0}
+  duration: 1
 --- !u!1 &1534448530
 GameObject:
   m_ObjectHideFlags: 0
@@ -704,7 +721,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b3d325f25130d440a55690dffa01e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Moon
-  moonRadius: 1
+  moonRadius: 2.2
   moonSpeed: 1
   planetTransform: {fileID: 1037905969}
 --- !u!212 &1634050368

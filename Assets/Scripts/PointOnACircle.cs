@@ -6,6 +6,7 @@ public class PointOnACircle : MonoBehaviour
 {
     public List<float> angles = new ();
     private int currentIndex = 0;
+    //public GameObject moonTransform;
 
     public Vector3 startPoint = Vector3.zero;
     public float duration = 1f;
@@ -42,6 +43,7 @@ public class PointOnACircle : MonoBehaviour
         float yPos = Mathf.Sin(angleInRads);
 
         Vector3 offset = new Vector3(xPos, yPos, 0f);
+        //moonTransform.transform.position = offset;
 
         Debug.DrawLine(startPoint, startPoint + offset);
     }
