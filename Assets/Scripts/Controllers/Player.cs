@@ -5,7 +5,9 @@ public class Player : MonoBehaviour
 {
     public Transform enemyTransform;
     public GameObject bombPrefab;
-    public List<Transform> asteroidTransforms;
+    //public List<GameObject> asteroidTransforms;
+    public List<GameObject> asteroidTransforms;
+    public SpaceRock asteroidScript;
 
     public GameObject powerUp;
     public float puRadius = 3;
@@ -165,14 +167,25 @@ public class Player : MonoBehaviour
         }
     }
     #region Radar
-    public void DetectAsteroids(float inMaxRange, List<Transform> inAsteroids) 
+    public void DetectAsteroids(float inMaxRange, List<GameObject> inAsteroids) 
     { // if asteriod in list is within Max Range draw a 2.5 long line from player position to asteroid
         for (int i = 0; i < inAsteroids.Count; i++) 
         {
-            float distance = Vector3.Distance(inAsteroids[i].position, transform.position);
+            //float distance = Vector3.Distance(inAsteroids[i].position, transform.position);
+            float distance = Vector3.Distance(inAsteroids[i].transform.position, transform.position);
             if (distance <= inMaxRange) 
             {
-                Debug.DrawLine(transform.position, inAsteroids[i].position, Color.red);
+                Debug.DrawLine(transform.position, inAsteroids[i].transform.position, Color.red);
+                if (Keyboard.current.yKey.wasPressedThisFrame)
+                {
+                    //freeze rock
+                    SpaceRock asteroidScriptREAL = inAsteroids[i].GetComponent<SpaceRock>();
+                    asteroidScriptREAL.playerTransform = transform;
+                    asteroidScriptREAL.spacerockRadius = distance;
+                    asteroidScriptREAL.currentDirection = 5;
+                    asteroidScriptREAL.shipBound = true;
+                    
+                }
             }
         }
     }
