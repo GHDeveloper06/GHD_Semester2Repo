@@ -5,6 +5,11 @@ public class Player : MonoBehaviour
 {
     public Transform enemyTransform;
     public GameObject bombPrefab;
+
+    public GameObject pullBombPrefab;
+    private float pullBombStepAngle = 0f;
+    public pullBomb pullBombScript;
+
     //public List<GameObject> asteroidTransforms;
     public List<GameObject> asteroidTransforms;
     public SpaceRock asteroidScript;
@@ -101,6 +106,12 @@ public class Player : MonoBehaviour
 
                 WarpPlayer(enemyTransform, EnemyPlayerRatio);
             }
+
+            if (Keyboard.current.pKey.wasPressedThisFrame) 
+            {
+                PullBombMethod();
+
+            }
         }
         
     }
@@ -112,6 +123,29 @@ public class Player : MonoBehaviour
         Instantiate(bombPrefab, playerPosition + bombOffset, Quaternion.identity);
     }
 
+    public void PullBombMethod()
+    {
+        //instantiate pull bomb
+        GameObject spawnedPullBomb = Instantiate(pullBombPrefab, transform.position, transform.rotation);
+        pullBomb pullBombScript = spawnedPullBomb.GetComponent<pullBomb>();
+        if (pullBombScript.timer >= 5f) 
+        {
+            //check distance between bomb and asteroids
+            for (int i = 0; i < asteroidTransforms.Count; i++)
+            {
+                //float distance = Vector3.Distance(inAsteroids[i].position, transform.position);
+                float pullDistance = Vector3.Distance(asteroidTransforms[i].transform.position, transform.position);
+                if (pullDistance <= 7f)
+                {
+                    SpaceRock asteroidScriptREAL = asteroidTransforms[i].GetComponent<SpaceRock>();
+                    asteroidScriptREAL.playerTransform = transform;
+                    asteroidScriptREAL.spacerockRadius = pullDistance;
+                    asteroidScriptREAL.currentDirection = 5;
+                }
+            }
+        }
+        
+    }
     public void spawnBombTrail(float inBombSpacing, int inNumberOfBombs) 
     {
         //make loop to spawn multiple bombs

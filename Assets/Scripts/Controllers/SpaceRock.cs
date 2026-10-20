@@ -15,6 +15,11 @@ public class SpaceRock : MonoBehaviour
     public float spacerockSpeed = 25;
 
     private float stepAngle = 0;
+    private float maxRockSpeed = 100f;
+
+    //speed up
+    private float rockAccelerationTime;
+    private float rockAcceleration;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -24,6 +29,8 @@ public class SpaceRock : MonoBehaviour
         int randomDirectionNumber = Random.Range(1, 10);
         currentDirection = randomDirectionNumber;
         shipBound = false;
+
+        rockAcceleration = maxRockSpeed / rockAccelerationTime;
     }
 
     // Update is called once per frame
