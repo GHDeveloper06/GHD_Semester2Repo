@@ -31,6 +31,8 @@ public class SpaceRock : MonoBehaviour
 
     public float startingAngleCheck;
 
+    public Vector3 shipCollision = Vector3.zero;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -53,20 +55,20 @@ public class SpaceRock : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(shipBound);
-        /*if (shipBound == false) 
-        {
-            rockMovement();
-        }
         if (shipBound == true)
         {
-            OrbitalMotion(spacerockRadius, spacerockSpeed, playerTransform);
-        }*/
+            transform.position += shipCollision;
+        }
+        else 
+        {
+            transform.position += shipCollision * Time.deltaTime;
+        }
+        
 
         if (pulledByBomb == true)
         {
             Debug.Log("starting Angle Check is " + startingAngleCheck + "Now starting Angle is " + startingAngle);
-            // float xPos = Mathf.Cos(stepAngle * Mathf.Deg2Rad)
+
 
             //set starting angle and position for space rocks
             //float startingAngleX = Mathf.Acos(transform.position.x / spacerockRadius);
@@ -81,10 +83,6 @@ public class SpaceRock : MonoBehaviour
             float yPos = Mathf.Sin(currentAngle) * spacerockRadius;
             Vector3 orbitBomb = new Vector3(xPos + pullBombTransform.position.x, yPos + pullBombTransform.position.y, 0);
             transform.position = orbitBomb;
-
-            //Debug.Log("StartingAngle" + (startingAngleX + startingAngleY) + " currentAngle:" + currentAngle);
-
-            //spacerockRadius -= 1f;
         }
         else 
         { 

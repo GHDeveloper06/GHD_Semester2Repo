@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     //public List<GameObject> asteroidTransforms;
     public List<GameObject> asteroidTransforms;
     public SpaceRock asteroidScript;
+    private SpaceRock asteroidScriptREAL;
 
     public GameObject powerUp;
     public float puRadius = 3;
@@ -26,6 +27,7 @@ public class Player : MonoBehaviour
     public float accelerationTime;
     private float acceleration;
 
+    private int o;
     //0 is un assigned, 1 is not pressed, 2 is pressed
 
     private Vector3 velocity = Vector3.zero;
@@ -36,6 +38,11 @@ public class Player : MonoBehaviour
     {
         acceleration = maxSpeed / accelerationTime; // a = delta V / delta T
         //enemyRadar(3, 10);
+        while (o < asteroidTransforms.Count)
+        {
+            asteroidScriptREAL = asteroidTransforms[o].GetComponent<SpaceRock>();
+            o++;
+        }
     }
 
     //public float UniversalTimer;
@@ -228,10 +235,15 @@ public class Player : MonoBehaviour
             {
                 Debug.DrawLine(transform.position, inAsteroids[i].transform.position, Color.red);
             }
-            if (distance <= 1f) 
+            if (distance <= 1f)
             {
-                SpaceRock asteroidScriptREAL = inAsteroids[i].GetComponent<SpaceRock>();
-                asteroidScriptREAL.transform.position += Time.deltaTime * velocity;
+                asteroidScriptREAL = inAsteroids[i].GetComponent<SpaceRock>();
+                asteroidScriptREAL.shipBound = true;
+                asteroidScriptREAL.shipCollision += Time.deltaTime * velocity;
+            }
+            else 
+            {
+                asteroidScriptREAL.shipBound = false;
             }
         }
     }
