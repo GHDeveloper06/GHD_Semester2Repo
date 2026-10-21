@@ -63,10 +63,12 @@ public class Player : MonoBehaviour
     public Vector2 bombOffset = new Vector2(0, -1);
     void Update()
     {
+        
         enemyRadar(radarRadius, radarSideCount);
         //UniversalTimer += Time.deltaTime;
         PlayerController();
-        
+        asteroidScriptREAL.playerCurrentVelocity = velocity;
+
         DetectAsteroids(2.5f, asteroidTransforms);
         if (Keyboard.current.uKey.wasPressedThisFrame) 
         {
@@ -235,11 +237,19 @@ public class Player : MonoBehaviour
             {
                 Debug.DrawLine(transform.position, inAsteroids[i].transform.position, Color.red);
             }
-            if (distance <= 1f)
+            if (distance < 0.5f)
             {
                 asteroidScriptREAL = inAsteroids[i].GetComponent<SpaceRock>();
                 asteroidScriptREAL.shipBound = true;
                 asteroidScriptREAL.shipCollision += Time.deltaTime * velocity;
+                asteroidScriptREAL.transform.position += Time.deltaTime * velocity;
+
+                //asteroidScriptREAL.shipCollision += Time.deltaTime * velocity;
+                //asteroidScriptREAL.transform.position += Time.deltaTime * velocity;
+                if (distance <= 0.4f) 
+                {
+                    asteroidScriptREAL.shipCollision += asteroidScriptREAL.playerCurrentVelocity * Time.deltaTime;
+                }
             }
             else 
             {
@@ -339,7 +349,7 @@ public class Player : MonoBehaviour
         }
         //velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
         transform.position += Time.deltaTime * velocity;
-        Debug.Log("velocity.magnitude is " + velocity.magnitude);
+        //Debug.Log("velocity" + velocity);
     }
     #endregion
 }

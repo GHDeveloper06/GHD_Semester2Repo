@@ -9,6 +9,9 @@ public class SpaceRock : MonoBehaviour
     private int randomDirectionNumber = 0;
 
     public bool shipBound;
+    public bool activeMovement;
+
+    public Vector3 playerCurrentVelocity;
 
     public Transform playerTransform;
     public Transform pullBombTransform;
@@ -41,6 +44,7 @@ public class SpaceRock : MonoBehaviour
         int randomDirectionNumber = Random.Range(1, 10);
         currentDirection = randomDirectionNumber;
         shipBound = false;
+        activeMovement = false;
 
         startingAngleX = Mathf.Acos(transform.position.x / spacerockRadius);
         startingAngleY = Mathf.Asin(transform.position.y / spacerockRadius);
@@ -55,14 +59,7 @@ public class SpaceRock : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (shipBound == true)
-        {
-            transform.position += shipCollision;
-        }
-        else 
-        {
-            transform.position += shipCollision * Time.deltaTime;
-        }
+        spaceRockMove();
         
 
         if (pulledByBomb == true)
@@ -90,21 +87,27 @@ public class SpaceRock : MonoBehaviour
         }
         
     }
-    public void OrbitalMotion(float radius, float speed, Transform target)
+    public void spaceRockMove() 
     {
-        //increase step angle each frame
-        stepAngle += Time.deltaTime * speed;
-        //convert step angle from degrees to radians
-        float currentAngle = stepAngle * Mathf.Deg2Rad;
-        //get X and Y position for angle
-        float xPos = Mathf.Cos(currentAngle) * radius;
-        float yPos = Mathf.Sin(currentAngle) * radius;
-        //create vector with X & Y angle positions
-        Vector3 orbiter = new Vector3(xPos + target.transform.position.x, yPos + target.transform.position.y, 0);
+        
+        if (shipBound == true)
+        {
+            //transform.position += shipCollision;
+            shipCollision += playerCurrentVelocity;
+            
+            activeMovement = false;
+        }
+        else if (activeMovement == true)
+        {
 
-        //set the moon's transform to unit circle position
-        transform.position = orbiter;
-
+            transform.position += shipCollision * Time.deltaTime;
+            //activeMovement = true;
+        }
+        else 
+        {
+            activeMovement = true;
+        }
+        Debug.Log("ship Collision" + (shipCollision + playerCurrentVelocity));
     }
     public void rockMovement() 
     {
