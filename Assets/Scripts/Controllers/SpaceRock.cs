@@ -20,11 +20,16 @@ public class SpaceRock : MonoBehaviour
     private float stepAngle = 0;
     private float maxRockSpeed = 500f;
 
+    private float startingAngleX;
+    private float startingAngleY;
     //speed up
     //private float rockAccelerationTime = 6f;
     //private float rockAcceleration;
 
     public bool pulledByBomb = false;
+    public float startingAngle;
+
+    public float startingAngleCheck;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -34,6 +39,13 @@ public class SpaceRock : MonoBehaviour
         int randomDirectionNumber = Random.Range(1, 10);
         currentDirection = randomDirectionNumber;
         shipBound = false;
+
+        startingAngleX = Mathf.Acos(transform.position.x / spacerockRadius);
+        startingAngleY = Mathf.Asin(transform.position.y / spacerockRadius);
+
+        startingAngle = 0f;
+        startingAngleCheck = Mathf.Atan2(transform.position.x, transform.position.y);
+        Debug.Log("starting Angle Check is " + startingAngleCheck);
 
         //rockAcceleration = maxRockSpeed / rockAccelerationTime;
     }
@@ -50,17 +62,33 @@ public class SpaceRock : MonoBehaviour
         {
             OrbitalMotion(spacerockRadius, spacerockSpeed, playerTransform);
         }*/
-        if (pulledByBomb == true) 
+
+        if (pulledByBomb == true)
         {
+            Debug.Log("starting Angle Check is " + startingAngleCheck + "Now starting Angle is " + startingAngle);
+            // float xPos = Mathf.Cos(stepAngle * Mathf.Deg2Rad)
+
+            //set starting angle and position for space rocks
+            //float startingAngleX = Mathf.Acos(transform.position.x / spacerockRadius);
+
+            //float startingAngleY = Mathf.Asin(transform.position.y / spacerockRadius);
+
             //make orbit speed increase over time
             spacerockSpeed += Time.deltaTime * 83.33f;
             stepAngle += Time.deltaTime * spacerockSpeed;
-            float currentAngle = stepAngle * Mathf.Deg2Rad;
+            float currentAngle = (stepAngle * Mathf.Deg2Rad) + startingAngle;
             float xPos = Mathf.Cos(currentAngle) * spacerockRadius;
             float yPos = Mathf.Sin(currentAngle) * spacerockRadius;
             Vector3 orbitBomb = new Vector3(xPos + pullBombTransform.position.x, yPos + pullBombTransform.position.y, 0);
             transform.position = orbitBomb;
-            spacerockRadius -= 1f;
+
+            //Debug.Log("StartingAngle" + (startingAngleX + startingAngleY) + " currentAngle:" + currentAngle);
+
+            //spacerockRadius -= 1f;
+        }
+        else 
+        { 
+            startingAngleCheck = Mathf.Atan2(transform.position.x, transform.position.y);
         }
         
     }

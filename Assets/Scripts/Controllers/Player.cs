@@ -145,11 +145,19 @@ public class Player : MonoBehaviour
                     SpaceRock asteroidScriptREAL = asteroidTransforms[i].GetComponent<SpaceRock>();
                     asteroidScriptREAL.pullBombTransform = spawnedPullBombPrefab.GetComponent<Transform>();
                     asteroidScriptREAL.pulledByBomb = true;
-                    //asteroidScriptREAL.playerTransform = transform;
-                    asteroidScriptREAL.spacerockRadiusX = asteroidTransforms[i].transform.position.x;
-                    asteroidScriptREAL.spacerockRadiusY = asteroidTransforms[i].transform.position.y;
-                    asteroidScriptREAL.spacerockRadius = pullDistance - pullCount;
-                    asteroidScriptREAL.currentDirection = 5;
+                    if (asteroidScriptREAL.pulledByBomb == true) 
+                    {
+                        //asteroidScriptREAL.playerTransform = transform;
+                        asteroidScriptREAL.spacerockRadiusX = asteroidTransforms[i].transform.position.x;
+                        asteroidScriptREAL.spacerockRadiusY = asteroidTransforms[i].transform.position.y;
+                        asteroidScriptREAL.spacerockRadius = pullDistance - pullCount;
+                        asteroidScriptREAL.currentDirection = 5;
+                    }
+                    if (asteroidScriptREAL.startingAngle == 0) 
+                    {
+                        asteroidScriptREAL.startingAngle = asteroidScriptREAL.startingAngleCheck;
+                    }
+                    
                 }
             }
         }
@@ -324,7 +332,7 @@ public class Player : MonoBehaviour
         }
         //velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
         transform.position += Time.deltaTime * velocity;
-        Debug.Log(velocity.magnitude);
+        Debug.Log("velocity.magnitude is " + velocity.magnitude);
     }
     #endregion
 }
