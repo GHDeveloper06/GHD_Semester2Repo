@@ -227,16 +227,11 @@ public class Player : MonoBehaviour
             if (distance <= inMaxRange) 
             {
                 Debug.DrawLine(transform.position, inAsteroids[i].transform.position, Color.red);
-                if (Keyboard.current.yKey.wasPressedThisFrame)
-                {
-                    //freeze rock
-                    SpaceRock asteroidScriptREAL = inAsteroids[i].GetComponent<SpaceRock>();
-                    asteroidScriptREAL.playerTransform = transform;
-                    asteroidScriptREAL.spacerockRadius = distance;
-                    asteroidScriptREAL.currentDirection = 5;
-                    asteroidScriptREAL.shipBound = true;
-                    
-                }
+            }
+            if (distance <= 1f) 
+            {
+                SpaceRock asteroidScriptREAL = inAsteroids[i].GetComponent<SpaceRock>();
+                asteroidScriptREAL.transform.position += Time.deltaTime * velocity;
             }
         }
     }
