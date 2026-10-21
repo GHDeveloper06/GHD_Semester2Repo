@@ -11,15 +11,20 @@ public class SpaceRock : MonoBehaviour
     public bool shipBound;
 
     public Transform playerTransform;
+    public Transform pullBombTransform;
     public float spacerockRadius = 1;
+    public float spacerockRadiusX;
+    public float spacerockRadiusY;
     public float spacerockSpeed = 25;
 
     private float stepAngle = 0;
-    private float maxRockSpeed = 100f;
+    private float maxRockSpeed = 500f;
 
     //speed up
-    private float rockAccelerationTime;
-    private float rockAcceleration;
+    //private float rockAccelerationTime = 6f;
+    //private float rockAcceleration;
+
+    public bool pulledByBomb = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,20 +35,32 @@ public class SpaceRock : MonoBehaviour
         currentDirection = randomDirectionNumber;
         shipBound = false;
 
-        rockAcceleration = maxRockSpeed / rockAccelerationTime;
+        //rockAcceleration = maxRockSpeed / rockAccelerationTime;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(shipBound);
-        if (shipBound == false) 
+        //Debug.Log(shipBound);
+        /*if (shipBound == false) 
         {
             rockMovement();
         }
         if (shipBound == true)
         {
             OrbitalMotion(spacerockRadius, spacerockSpeed, playerTransform);
+        }*/
+        if (pulledByBomb == true) 
+        {
+            //make orbit speed increase over time
+            spacerockSpeed += Time.deltaTime * 83.33f;
+            stepAngle += Time.deltaTime * spacerockSpeed;
+            float currentAngle = stepAngle * Mathf.Deg2Rad;
+            float xPos = Mathf.Cos(currentAngle) * spacerockRadius;
+            float yPos = Mathf.Sin(currentAngle) * spacerockRadius;
+            Vector3 orbitBomb = new Vector3(xPos + pullBombTransform.position.x, yPos + pullBombTransform.position.y, 0);
+            transform.position = orbitBomb;
+            spacerockRadius -= 1f;
         }
         
     }

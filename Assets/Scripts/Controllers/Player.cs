@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     public GameObject bombPrefab;
 
     public GameObject pullBombPrefab;
+    public GameObject spawnedPullBombPrefab;
     private float pullBombStepAngle = 0f;
     public pullBomb pullBombScript;
 
@@ -60,7 +61,7 @@ public class Player : MonoBehaviour
         PlayerController();
         
         DetectAsteroids(2.5f, asteroidTransforms);
-        if (Keyboard.current.pKey.wasPressedThisFrame) 
+        if (Keyboard.current.uKey.wasPressedThisFrame) 
         {
             SpawnPowerUps(puRadius, puAmount);
         }
@@ -107,11 +108,7 @@ public class Player : MonoBehaviour
                 WarpPlayer(enemyTransform, EnemyPlayerRatio);
             }
 
-            if (Keyboard.current.pKey.wasPressedThisFrame) 
-            {
-                PullBombMethod();
-
-            }
+            PullBombMethod();
         }
         
     }
@@ -126,20 +123,32 @@ public class Player : MonoBehaviour
     public void PullBombMethod()
     {
         //instantiate pull bomb
-        GameObject spawnedPullBomb = Instantiate(pullBombPrefab, transform.position, transform.rotation);
-        pullBomb pullBombScript = spawnedPullBomb.GetComponent<pullBomb>();
+        if (Keyboard.current.pKey.wasPressedThisFrame)
+        {
+            spawnedPullBombPrefab = Instantiate(pullBombPrefab, transform.position, transform.rotation);
+            pullBombScript = spawnedPullBombPrefab.GetComponent<pullBomb>();
+
+        }
+        
         if (pullBombScript.timer >= 5f) 
         {
+            Debug.Log("pull bomb activate");
             //check distance between bomb and asteroids
             for (int i = 0; i < asteroidTransforms.Count; i++)
             {
                 //float distance = Vector3.Distance(inAsteroids[i].position, transform.position);
-                float pullDistance = Vector3.Distance(asteroidTransforms[i].transform.position, transform.position);
-                if (pullDistance <= 7f)
+                float pullCount = 0f;
+                float pullDistance = Vector3.Distance(asteroidTransforms[i].transform.position, spawnedPullBombPrefab.transform.position);
+                if (pullDistance <= 15f)
                 {
+                    pullCount += 1f * Time.deltaTime;
                     SpaceRock asteroidScriptREAL = asteroidTransforms[i].GetComponent<SpaceRock>();
-                    asteroidScriptREAL.playerTransform = transform;
-                    asteroidScriptREAL.spacerockRadius = pullDistance;
+                    asteroidScriptREAL.pullBombTransform = spawnedPullBombPrefab.GetComponent<Transform>();
+                    asteroidScriptREAL.pulledByBomb = true;
+                    //asteroidScriptREAL.playerTransform = transform;
+                    asteroidScriptREAL.spacerockRadiusX = asteroidTransforms[i].transform.position.x;
+                    asteroidScriptREAL.spacerockRadiusY = asteroidTransforms[i].transform.position.y;
+                    asteroidScriptREAL.spacerockRadius = pullDistance - pullCount;
                     asteroidScriptREAL.currentDirection = 5;
                 }
             }
