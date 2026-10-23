@@ -38,10 +38,9 @@ public class Player : MonoBehaviour
     {
         acceleration = maxSpeed / accelerationTime; // a = delta V / delta T
         //enemyRadar(3, 10);
-        while (o < asteroidTransforms.Count)
+        for (int i = 0; i < asteroidTransforms.Count; i++) 
         {
-            asteroidScriptREAL = asteroidTransforms[o].GetComponent<SpaceRock>();
-            o++;
+            asteroidScriptREAL = asteroidTransforms[i].GetComponent<SpaceRock>();
         }
     }
 

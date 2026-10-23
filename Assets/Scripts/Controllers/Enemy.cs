@@ -9,14 +9,64 @@ public class Enemy : MonoBehaviour
     //get reference to meteor transforms
     public List<Transform> meteorTransforms;
 
+    [SerializeField] private Vector3 temporaryTarget = Vector3.zero;
+    [SerializeField] private Vector3 currentTarget = Vector3.zero;
+
+    public Transform obstacle;
+
     //create rotation speed
     public float rotationSpeed = 70f;
-    private float enemySpeed = 4.6f;
+    public float enemySpeed = 2f;
+    // public float enemyMeteorDistance;
 
     void Update() 
     {
+        
+        float enemyObstacleDistance = Vector3.Distance(currentTarget, transform.position);
+        createPathPoint(enemyObstacleDistance);
+        if (enemyObstacleDistance <= 1.5f)
+        {
+            //rotationSpeed = -70;
+            createPathPoint(enemyObstacleDistance);
+            //targetPoint();
+        }
+        else 
+        {
+            currentTarget = obstacle.transform.position;
+            rotationSpeed = 70;
+            //targetPoint();
+        }
         targetPoint();
+        
         transform.position += Time.deltaTime * transform.up * enemySpeed;
+        /*for (int i = 0; i < meteorTransforms.Count; i++) 
+        {
+            //find distance between meteor and enemy
+            float enemyMeteorDistance = Vector3.Distance(meteorTransforms[i].transform.position, transform.position);
+            Debug.Log("Meteor distance" + enemyMeteorDistance);
+
+            //if meteor is too close to ship, stop pointing at player
+            if (enemyMeteorDistance <= 2f)
+            {
+                Debug.Log("Meteor too close");
+            }
+            else
+            {
+                targetPoint();
+            }
+        }*/
+
+
+    }
+    public void createPathPoint(float calcDistance) 
+    {
+        //if enemy gets close to object
+        //give them a new temporary target
+        if (calcDistance <= 1.5f) 
+        {
+            temporaryTarget = obstacle.transform.position + Vector3.up;
+            currentTarget = temporaryTarget;
+        }
     }
 
     public void targetPoint()

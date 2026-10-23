@@ -107,7 +107,7 @@ public class SpaceRock : MonoBehaviour
         {
             activeMovement = true;
         }
-        Debug.Log("ship Collision" + (shipCollision + playerCurrentVelocity));
+        //Debug.Log("ship Collision" + (shipCollision + playerCurrentVelocity));
     }
     public void rockMovement() 
     {
