@@ -40,69 +40,34 @@ public class Enemy : MonoBehaviour
 
         float enemyObjectDistance = Vector3.Distance(obstacle.position, transform.position);
 
-        
-        if (forceTarget == true) 
+
+        if (forceTarget == true && enemyObjectDistance > 3.1f)
         {
             currentTarget = playerTransform.position;
         }
-        if (enemyObjectDistance <= 3.1f)
-        {
-            
-            float distanceCheck = Vector3.Distance(targetNodes[targetCounter], transform.position);
-            
-   
-                if (targetCounter > 4) 
-                {
-                    //currentTarget = playerTransform.position;
-                    forceTarget = true;
-                }
-                else 
-                {
-                    forceTarget = false;
-                    currentTarget = targetNodes[targetCounter];
-                }
-                
-                if (distanceCheck < 0.5) 
-                {
-                    targetCounter++;
-                }
-            
-        }
-
-
-        /*if (enemyObstacleDistance <= 1.5f)
-        {
-            //rotationSpeed = -70;
-            createPathPoint(enemyObstacleDistance);
-            //targetPoint();
-        }
         else 
         {
-            currentTarget = obstacle.transform.position;
-            rotationSpeed = 70;
-            //targetPoint();
-        }*/
+            currentTarget = targetNodes[0];
+        }
+        if (enemyObjectDistance <= 3.1f)
+        {
+            float distanceCheck = Vector3.Distance(targetNodes[0], transform.position);
+
+            if (distanceCheck < 0.1f && targetNodes.Count > 0)
+            {
+                targetNodes.Remove(targetNodes[0]);
+                forceTarget = false;
+            }
+            else if (targetNodes.Count < 1) 
+            {
+                forceTarget = true;
+            }
+        }
+
         targetPoint();
 
 
         transform.position += Time.deltaTime * transform.up * enemySpeed;
-        
-        /*for (int i = 0; i < meteorTransforms.Count; i++) 
-        {
-            //find distance between meteor and enemy
-            float enemyMeteorDistance = Vector3.Distance(meteorTransforms[i].transform.position, transform.position);
-            Debug.Log("Meteor distance" + enemyMeteorDistance);
-
-            //if meteor is too close to ship, stop pointing at player
-            if (enemyMeteorDistance <= 2f)
-            {
-                Debug.Log("Meteor too close");
-            }
-            else
-            {
-                targetPoint();
-            }
-        }*/
 
 
     }
@@ -119,7 +84,7 @@ public class Enemy : MonoBehaviour
 
     public void targetPoint()
     {
-        Vector3 directionToTarget = (playerTransform.position - transform.position).normalized;
+        Vector3 directionToTarget = (currentTarget - transform.position).normalized;
         float deltaAngle = ComputeShortestAngle(transform.up, directionToTarget);
 
         //gives 1 or -1
@@ -165,6 +130,13 @@ public class Enemy : MonoBehaviour
         //check distance between enemy and object points 
         if (enemyObjectDistance <= 3.5f && enemyObjectDistance > 3.1f)
         {
+            if (targetNodes.Count < 4) 
+            {
+                for (int ii = 0; ii < 4; ii++) 
+                {
+                    targetNodes.Add(new Vector3(0, 0, 0));
+                }
+            }
             pauseEnemyMovementTimer = 0;
 
             //List<float> closestPoints = new();
