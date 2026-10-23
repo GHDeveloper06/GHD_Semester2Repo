@@ -478,6 +478,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 364155228}
     - target: {fileID: -2819944526765866806, guid: e3900e4d87ee29c43ad1d9098b51432c, type: 3}
+      propertyPath: targetNodes.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -2819944526765866806, guid: e3900e4d87ee29c43ad1d9098b51432c, type: 3}
       propertyPath: meteorTransforms.Array.size
       value: 10
       objectReference: {fileID: 0}
@@ -531,7 +535,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4504276444959460, guid: e3900e4d87ee29c43ad1d9098b51432c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5
+      value: -6.96
       objectReference: {fileID: 0}
     - target: {fileID: 4504276444959460, guid: e3900e4d87ee29c43ad1d9098b51432c, type: 3}
       propertyPath: m_LocalPosition.z

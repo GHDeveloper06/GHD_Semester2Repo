@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -9,7 +10,7 @@ public class Enemy : MonoBehaviour
     //get reference to meteor transforms
     public List<Transform> meteorTransforms;
 
-    public List<Vector3> targetNodes;
+    public List<Vector3> targetNodes = new(5);
     public List<Vector3> points = new();
 
     [SerializeField] private Vector3 temporaryTarget = Vector3.zero;
@@ -22,6 +23,9 @@ public class Enemy : MonoBehaviour
     //create rotation speed
     public float rotationSpeed = 70f;
     public float enemySpeed = 2f;
+
+    public bool canMove = true;
+    [SerializeField] private float pauseEnemyMovementTimer = 1;
     // public float enemyMeteorDistance;
 
     void Update() 
@@ -31,6 +35,8 @@ public class Enemy : MonoBehaviour
         
         float enemyObstacleDistance = Vector3.Distance(currentTarget, transform.position);
         createPathPoint(enemyObstacleDistance);
+
+
         /*if (enemyObstacleDistance <= 1.5f)
         {
             //rotationSpeed = -70;
@@ -44,8 +50,11 @@ public class Enemy : MonoBehaviour
             //targetPoint();
         }*/
         targetPoint();
-        
-        transform.position += Time.deltaTime * transform.up * enemySpeed;
+
+        if (canMove == true) 
+        {
+            transform.position += Time.deltaTime * transform.up * enemySpeed;
+        }
         /*for (int i = 0; i < meteorTransforms.Count; i++) 
         {
             //find distance between meteor and enemy
@@ -116,12 +125,16 @@ public class Enemy : MonoBehaviour
         return Mathf.DeltaAngle(angleA, angleB);
     }
     [SerializeField] private List<float> closestPoints = new();
+    [SerializeField] private List<float> closestPointstoEnemy = new();
     public void obstaclePointPursuer(Vector3 transformPlayer) 
     {
         float enemyObjectDistance = Vector3.Distance(obstacle.position, transform.position);
+        
         //check distance between enemy and object points 
         if (enemyObjectDistance <= 3.5f)
         {
+            pauseEnemyMovementTimer = 0;
+
             //List<float> closestPoints = new();
             //check if player is close to points
             for (int i = 0; i < points.Count - 1; i++)
@@ -131,17 +144,56 @@ public class Enemy : MonoBehaviour
                 {
                     closestPoints.Add(playerObjectPointDistance);
                 }
-            }
-            //sort list from smallest to largest
-            closestPoints.Sort();
-            for (int c = 0; c < 3; c++)
-            {
 
+                float enemyObjectPointDistance = Vector3.Distance(points[i], transform.position);
+                if (closestPointstoEnemy.Count != 8) 
+                {
+                    closestPointstoEnemy.Add(enemyObjectPointDistance);
+                }
+                if (closestPoints.Count == 8 & closestPointstoEnemy.Count == 8) 
+                {
+                    //sort both lists from smallest to largest
+                    closestPoints.Sort();
+                    closestPointstoEnemy.Sort();
+
+                    //make sorted distance correlate with vector points
+                    for (int count = 0; count < 8; count++)
+                    {
+                        playerObjectPointDistance = Vector3.Distance(points[i], transformPlayer);
+                        enemyObjectPointDistance = Vector3.Distance(points[i], transform.position);
+
+                        if (closestPointstoEnemy[0] >= enemyObjectPointDistance)
+                        {
+                            targetNodes[0] = points[i];
+                        }
+                        for (int c = 0; c < 3; c++) 
+                        {
+                            if (closestPoints[c] >= playerObjectPointDistance) 
+                            {
+                                if (c == 0)
+                                {
+                                    targetNodes[1] = points[i];
+                                }
+                                if (c == 1) 
+                                {
+                                    targetNodes[2] = points[i];
+                                }
+                                if (c == 2)
+                                {
+                                    targetNodes[3] = points[i];
+                                }
+                            }
+                        }
+
+                    }
+                }
             }
+
         }
         else 
         {
             closestPoints.Clear();
+            closestPointstoEnemy.Clear();
         }
     }
     public void obstaclePointCreator(float radius, int circlePoints)
