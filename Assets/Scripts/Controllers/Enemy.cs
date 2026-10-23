@@ -24,9 +24,11 @@ public class Enemy : MonoBehaviour
     public float rotationSpeed = 70f;
     public float enemySpeed = 2f;
 
-    public bool canMove = true;
+    public bool forceTarget = true;
     [SerializeField] private float pauseEnemyMovementTimer = 1;
     // public float enemyMeteorDistance;
+
+    public int targetCounter = 0;
 
     void Update() 
     {
@@ -35,6 +37,37 @@ public class Enemy : MonoBehaviour
         
         float enemyObstacleDistance = Vector3.Distance(currentTarget, transform.position);
         createPathPoint(enemyObstacleDistance);
+
+        float enemyObjectDistance = Vector3.Distance(obstacle.position, transform.position);
+
+        
+        if (forceTarget == true) 
+        {
+            currentTarget = playerTransform.position;
+        }
+        if (enemyObjectDistance <= 3.1f)
+        {
+            
+            float distanceCheck = Vector3.Distance(targetNodes[targetCounter], transform.position);
+            
+   
+                if (targetCounter > 4) 
+                {
+                    //currentTarget = playerTransform.position;
+                    forceTarget = true;
+                }
+                else 
+                {
+                    forceTarget = false;
+                    currentTarget = targetNodes[targetCounter];
+                }
+                
+                if (distanceCheck < 0.5) 
+                {
+                    targetCounter++;
+                }
+            
+        }
 
 
         /*if (enemyObstacleDistance <= 1.5f)
@@ -51,10 +84,9 @@ public class Enemy : MonoBehaviour
         }*/
         targetPoint();
 
-        if (canMove == true) 
-        {
-            transform.position += Time.deltaTime * transform.up * enemySpeed;
-        }
+
+        transform.position += Time.deltaTime * transform.up * enemySpeed;
+        
         /*for (int i = 0; i < meteorTransforms.Count; i++) 
         {
             //find distance between meteor and enemy
@@ -131,7 +163,7 @@ public class Enemy : MonoBehaviour
         float enemyObjectDistance = Vector3.Distance(obstacle.position, transform.position);
         
         //check distance between enemy and object points 
-        if (enemyObjectDistance <= 3.5f)
+        if (enemyObjectDistance <= 3.5f && enemyObjectDistance > 3.1f)
         {
             pauseEnemyMovementTimer = 0;
 
