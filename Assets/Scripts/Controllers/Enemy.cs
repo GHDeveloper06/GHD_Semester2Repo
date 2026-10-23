@@ -9,10 +9,15 @@ public class Enemy : MonoBehaviour
     //get reference to meteor transforms
     public List<Transform> meteorTransforms;
 
+    public List<Vector3> targetNodes;
+    public List<Vector3> points = new();
+
     [SerializeField] private Vector3 temporaryTarget = Vector3.zero;
     [SerializeField] private Vector3 currentTarget = Vector3.zero;
 
     public Transform obstacle;
+
+    public float obstacleRadius = 2;
 
     //create rotation speed
     public float rotationSpeed = 70f;
@@ -21,10 +26,12 @@ public class Enemy : MonoBehaviour
 
     void Update() 
     {
+        obstaclePointCreator(obstacleRadius, 8);
+        obstaclePointPursuer(playerTransform.position);
         
         float enemyObstacleDistance = Vector3.Distance(currentTarget, transform.position);
         createPathPoint(enemyObstacleDistance);
-        if (enemyObstacleDistance <= 1.5f)
+        /*if (enemyObstacleDistance <= 1.5f)
         {
             //rotationSpeed = -70;
             createPathPoint(enemyObstacleDistance);
@@ -35,7 +42,7 @@ public class Enemy : MonoBehaviour
             currentTarget = obstacle.transform.position;
             rotationSpeed = 70;
             //targetPoint();
-        }
+        }*/
         targetPoint();
         
         transform.position += Time.deltaTime * transform.up * enemySpeed;
@@ -108,5 +115,96 @@ public class Enemy : MonoBehaviour
 
         return Mathf.DeltaAngle(angleA, angleB);
     }
+    [SerializeField] private List<float> closestPoints = new();
+    public void obstaclePointPursuer(Vector3 transformPlayer) 
+    {
+        float enemyObjectDistance = Vector3.Distance(obstacle.position, transform.position);
+        //check distance between enemy and object points 
+        if (enemyObjectDistance <= 3.5f)
+        {
+            //List<float> closestPoints = new();
+            //check if player is close to points
+            for (int i = 0; i < points.Count - 1; i++)
+            {
+                float playerObjectPointDistance = Vector3.Distance(points[i], transformPlayer);
+                if (closestPoints.Count != 8)
+                {
+                    closestPoints.Add(playerObjectPointDistance);
+                }
+            }
+            //sort list from smallest to largest
+            closestPoints.Sort();
+            for (int c = 0; c < 3; c++)
+            {
 
+            }
+        }
+        else 
+        {
+            closestPoints.Clear();
+        }
+    }
+    public void obstaclePointCreator(float radius, int circlePoints)
+    {
+        //determine size of angle to add up to full rotation
+        float stepAngle = (2 * Mathf.PI) / circlePoints;
+
+        //temporary list to store x,y of each stepAngle
+        //List<Vector3> points = new();
+
+        float currentAngle = stepAngle;
+
+        for (int i = 0; i < circlePoints; i++)
+        {
+
+            if (points.Count != circlePoints)
+            {
+                //scale x,y by radius
+                float xPos = Mathf.Cos(currentAngle) * radius;
+                float yPos = Mathf.Sin(currentAngle) * radius;
+
+                Vector3 newPoint = new Vector3(xPos, yPos, 0);
+
+                points.Add(newPoint);
+                currentAngle += stepAngle;
+            }
+
+            //keeps current angle changing
+
+        }
+
+        for (int i = 0; i < circlePoints - 1; i++)
+        {
+            //check if object is close to enemy
+            float distance = Vector3.Distance(obstacle.position, transform.position);
+
+            Vector3 startPoint = obstacle.position + points[i];
+            Vector3 endPoint = obstacle.position + points[i + 1];
+
+            if (distance <= radius)
+            {
+                Debug.DrawLine(startPoint, endPoint, Color.red);
+            }
+            else
+            {
+                Debug.DrawLine(startPoint, endPoint, Color.green);
+            }
+
+
+            if (i == circlePoints - 2)
+            {
+                startPoint = obstacle.position + points[i + 1];
+                endPoint = obstacle.position + points[0];
+
+                if (distance <= radius)
+                {
+                    Debug.DrawLine(startPoint, endPoint, Color.red);
+                }
+                else
+                {
+                    Debug.DrawLine(startPoint, endPoint, Color.green);
+                }
+            }
+        }
+    }
 }
