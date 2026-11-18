@@ -22,10 +22,11 @@ public class Concept2Testings : MonoBehaviour
         rb2D = GetComponent<Rigidbody2D>();
         rotation = transform.eulerAngles;
     }
-
+    private float speed = 0;
     // Update is called once per frame
     void Update()
     {
+        
         //runs boxCast detecting colliders stuff
         if (isboxTouching() == true)
         {
@@ -38,8 +39,21 @@ public class Concept2Testings : MonoBehaviour
 
         if (Keyboard.current.rKey.isPressed == true) 
         {
-            rotation.z += Time.deltaTime * 10;
+            speed = 10f;
         }
+        else 
+        {
+            speed = 1f;
+        }
+        if (Keyboard.current.rKey.isPressed == false) 
+        {
+            
+            if (rb2D.angularVelocity != 0) 
+            {
+                rb2D.angularDamping = 5f;
+            }
+        }
+        rotation.z += Time.deltaTime * 10 * speed;
 
         transform.eulerAngles = rotation;
         
