@@ -267,7 +267,7 @@ GameObject:
   - component: {fileID: 1084507552}
   - component: {fileID: 1084507551}
   - component: {fileID: 1084507553}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -545,6 +545,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86be7a2cd1f0d1f40abe1e309b050b82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Concept2Testings
+  bCollider2d: {fileID: 1825150766}
+  LayersquareLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  theToucher: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
