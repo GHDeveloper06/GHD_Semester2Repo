@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 public class Concept2Testings : MonoBehaviour
@@ -8,10 +9,18 @@ public class Concept2Testings : MonoBehaviour
 
     [SerializeField] private LayerMask LayersquareLayer;
 
+    public Vector3 rotation = Vector3.zero;
+
+    [SerializeField]private Rigidbody2D rb2D;
+
+    public float angularVelocity { get; }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        GetComponent<Transform>();
+        rb2D = GetComponent<Rigidbody2D>();
+        rotation = transform.eulerAngles;
     }
 
     // Update is called once per frame
@@ -26,6 +35,17 @@ public class Concept2Testings : MonoBehaviour
         {
             print("not touching");
         }
+
+        if (Keyboard.current.rKey.isPressed == true) 
+        {
+            rotation.z += Time.deltaTime * 10;
+        }
+
+        transform.eulerAngles = rotation;
+        
+        Debug.Log(rb2D.angularVelocity);
+        //GameObject.angularVelocity.
+
     }
 
     private bool isboxTouching()
