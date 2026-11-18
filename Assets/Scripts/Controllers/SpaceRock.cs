@@ -109,6 +109,7 @@ public class SpaceRock : MonoBehaviour
         }
         //Debug.Log("ship Collision" + (shipCollision + playerCurrentVelocity));
     }
+    //rock movement doesn't do anything for the space shooter final, left over from journals
     public void rockMovement() 
     {
         if (currentDirection == 1)

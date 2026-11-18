@@ -176,7 +176,7 @@ public class Enemy : MonoBehaviour
                             {
                                 if (c == 0)
                                 {
-                                    targetNodes[1] = points[i];
+                                    targetNodes[3] = points[i];
                                 }
                                 if (c == 1) 
                                 {
@@ -184,7 +184,7 @@ public class Enemy : MonoBehaviour
                                 }
                                 if (c == 2)
                                 {
-                                    targetNodes[3] = points[i];
+                                    targetNodes[1] = points[i];
                                 }
                             }
                         }
