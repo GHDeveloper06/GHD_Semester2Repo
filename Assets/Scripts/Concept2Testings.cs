@@ -11,9 +11,11 @@ public class Concept2Testings : MonoBehaviour
 
     public Vector3 rotation = Vector3.zero;
 
+    public Transform circle;
+
     [SerializeField]private Rigidbody2D rb2D;
 
-    public float angularVelocity { get; }
+    //public float angularVelocity { get; }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,7 +28,9 @@ public class Concept2Testings : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        Vector3 closestPoint = bCollider2d.ClosestPoint(circle.position);
+        Debug.DrawLine(transform.position, closestPoint, Color.red);
+        Debug.Log("the closest point is " + closestPoint);
         //runs boxCast detecting colliders stuff
         if (isboxTouching() == true)
         {
